@@ -95,14 +95,14 @@
 					video.play();
 					video.muted = true;
 					// Initialize the recorder
-					// recorder = new RecordRTCPromisesHandler(stream, {
-					// 	mimeType: 'video/webm',
-					// 	bitsPerSecond: 128000
-					// });
 					recorder = new RecordRTCPromisesHandler(stream, {
-						mimeType: 'video/mp4',
+						mimeType: 'video/webm',
 						bitsPerSecond: 128000
 					});
+					// recorder = new RecordRTCPromisesHandler(stream, {
+					// 	mimeType: 'video/mp4',
+					// 	bitsPerSecond: 128000
+					// });
 					// Start recording the video
 					recorder.startRecording().then(function() {
 						console.info('Recording video ...');
