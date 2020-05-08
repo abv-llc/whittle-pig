@@ -8,7 +8,6 @@
 		<!-- 1. Include action buttons play/stop -->
 		<button id="btn-start-recording">Start Recording</button>
 		<button disabled="disabled" id="btn-stop-recording">Stop Recording</button>
-		<button id="cancel-button">Cancel Upload</button>
 		<!--
 			2. Include a video element that will display the current video stream
 			and as well to show the recorded video at the end.
@@ -17,25 +16,8 @@
 		<video autoplay="" controls="" id="my-preview"></video>
 		<p id="percentage"></p>
 		<div id="results"></div>
-		<!-- 
-			3. Include the RecordRTC library and the latest adapter.
-			Note that you may want to host these scripts in your own server
-		-->
-		<!-- 
-			<script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
-			<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script> 
-		-->
-		<!-- 
-			4. Initialize and prepare the video recorder logic
-		-->
-		<!-- 
-			<button id="upload-button">Upload to S3</button>
-			<p id="percentage"></p>
-			<div id="results"></div>
-		-->
-		<script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
-		<!-- use 5.5.5 or any other version on cdnjs -->
-		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/RecordRTC/5.5.5/RecordRTC.js"></script> -->
+		<!-- <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script> -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/RecordRTC/5.5.6/RecordRTC.js"></script>
 		<script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.12.min.js"></script>
 		<script>
 			AWS.config.region = 'us-east-1'; // 1. Enter your region
@@ -62,7 +44,6 @@
 			var button = document.getElementById('upload-button');
 			var results = document.getElementById('results');
 			var percentage = document.getElementById('percentage');
-			var cancelUpload = document.getElementById('cancel-button');
 
 			function dataURLtoFile(dataurl, filename) {
 				var arr = dataurl.split(','), 
@@ -94,14 +75,8 @@
 					// and mute the video to disable the echo issue !
 					video.play();
 					video.muted = true;
-					// Initialize the recorder
-					// recorder = new RecordRTCPromisesHandler(stream, {
-					// 	mimeType: 'video/webm',
-					// 	bitsPerSecond: 128000
-					// });
 					recorder = new RecordRTCPromisesHandler(stream, {
-						mimeType: 'video/mp4',
-						bitsPerSecond: 128000
+						mimeType: 'video/webm'
 					});
 					// Start recording the video
 					recorder.startRecording().then(function() {
@@ -122,7 +97,6 @@
 				this.disabled = true;
 				document.getElementById('btn-start-recording').disabled = false;
 				recorder.stopRecording().then(function(){
-					// recorder.getBlob() return a promise
 					var Blob = recorder.getBlob();
 					Blob.then(function(data){
 						// When and if the promise resolving successful
@@ -143,7 +117,6 @@
 								// console.log(progress.loaded + " of " + progress.total + " bytes");
 							}).send(function(err, data){
 								percentage.innerHTML = "File has been uploaded successfully.";
-								listObjs();
 							});
 						};
 						reader.readAsArrayBuffer(data);
@@ -154,23 +127,6 @@
 				recorder.stream.stop();
 				video.pause();
 			}, false);
-			function listObjs() {
-				var prefix = 'testing';
-				bucket.listObjects({
-					Prefix: prefix
-				},
-				function(err, data) {
-					if (err) {
-						results.innerHTML = 'ERROR: ' + err;
-					} else {
-						var objKeys = "";
-						data.Contents.forEach(function(obj) {
-							objKeys += obj.Key + "<br>";
-						});
-						results.innerHTML = objKeys;
-					}
-				});
-			}
 		</script>
 	</body>
 </html>
