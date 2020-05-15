@@ -15,7 +15,6 @@
 		<hr>
 		<video autoplay="" controls="" id="my-preview"></video>
 		<p id="percentage"></p>
-		<div id="results"></div>
 		<script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
 <!-- 		<script src="https://cdnjs.cloudflare.com/ajax/libs/RecordRTC/5.5.6/RecordRTC.js"></script> -->
 		<script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.12.min.js"></script>
@@ -40,10 +39,9 @@
 				}
 			});
 
-			var fileChooser = document.getElementById('file-chooser');
-			var button = document.getElementById('upload-button');
-			var results = document.getElementById('results');
 			var percentage = document.getElementById('percentage');
+			var video = document.getElementById('my-preview');
+			var recorder;
 
 			function dataURLtoFile(dataurl, filename) {
 				var arr = dataurl.split(','), 
@@ -57,9 +55,6 @@
 				return new File([u8arr], filename, {type:mime});
 			}
 
-			// Store a reference of the preview video element and a global reference to the recorder instance
-			var video = document.getElementById('my-preview');
-			var recorder;
 			// When the user clicks on start video recording
 			document.getElementById('btn-start-recording').addEventListener("click", function(){
 				// Disable start recording button
